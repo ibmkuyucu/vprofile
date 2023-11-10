@@ -1,3 +1,9 @@
+# VSCode files
+.vscode/
+
+# Vagrant files
+.vagrant/
+
 # Compiled class file
 *.class
 
