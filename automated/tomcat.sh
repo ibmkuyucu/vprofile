@@ -1,9 +1,8 @@
 TOMURL="https://archive.apache.org/dist/tomcat/tomcat-9/v9.0.75/bin/apache-tomcat-9.0.75.tar.gz"
-dnf -y install java-11-openjdk java-11-openjdk-devel
-dnf install rsync git maven wget -y
+yum install -y java-11-openjdk java-11-openjdk-devel rsync git maven wget
 cd /tmp/
 wget $TOMURL -O tomcatbin.tar.gz
-EXTOUT=`tar xzvf tomcatbin.tar.gz`
+EXTOUT=$(tar xzvf tomcatbin.tar.gz)
 TOMDIR=`echo $EXTOUT | cut -d '/' -f1`
 useradd --shell /sbin/nologin tomcat
 rsync -avzh /tmp/$TOMDIR/ /usr/local/tomcat/
@@ -46,16 +45,20 @@ systemctl daemon-reload
 systemctl start tomcat
 systemctl enable tomcat
 
-git clone -b main https://github.com/hkhcoder/vprofile-project.git
-cd vprofile-project
+git clone -b main https://github.com/ibmkuyucu/vprofile.git
+cd vprofile
 mvn install
 systemctl stop tomcat
 sleep 20
-rm -rf /usr/local/tomcat/webapps/ROOT*
+rm -f /usr/local/tomcat/webapps/ROOT.war
+rm -rf /usr/local/tomcat/webapps/ROOT
 cp target/vprofile-v2.war /usr/local/tomcat/webapps/ROOT.war
 systemctl start tomcat
 sleep 20
-systemctl stop firewalld
-systemctl disable firewalld
+# systemctl stop firewalld
+# systemctl disable firewalld
 #cp /vagrant/application.properties /usr/local/tomcat/webapps/ROOT/WEB-INF/classes/application.properties
-systemctl restart tomcat
+systemctl start firewalld
+systemctl enable firewalld
+firewall-cmd --add-port=8080/tcp
+firewall-cmd --runtime-to-permanent
