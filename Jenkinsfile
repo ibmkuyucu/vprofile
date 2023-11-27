@@ -9,7 +9,7 @@ pipeline {
         NEXUS_USER = "admin"
         NEXUS_PASS = "admin123"
         NEXUSIP = "192.168.229.13"
-        NEXUS_PORT = "8081"
+        NEXUSPORT = "8081"
         NEXUS_LOGIN = "nexuslogin"
         RELEASE_REPO = "vprofile-release"
         SNAP_REPO = "vprofile-snapshot"
