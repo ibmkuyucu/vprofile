@@ -18,6 +18,11 @@ pipeline {
     }
 
     stages {
+        stage('Fetch') {
+            steps {
+                git branch: 'main', url: "https://github.com/ibmkuyucu/vprofile.git"
+            }
+        }
         stage('Build') {
             steps {
                 sh 'mvn -s settings.xml -DskipTests install'
