@@ -1,49 +1,40 @@
 #!/bin/bash
-cp /etc/sysctl.conf /root/sysctl.conf_backup
-cat <<EOT> /etc/sysctl.conf
+
+cat <<EOT> /etc/sysctl.d/sonar.conf
 vm.max_map_count=262144
 fs.file-max=65536
 ulimit -n 65536
 ulimit -u 4096
 EOT
-cp /etc/security/limits.conf /root/sec_limit.conf_backup
-cat <<EOT> /etc/security/limits.conf
+
+cat <<EOT> /etc/security/limits.d/sonar.conf
 sonarqube   -   nofile   65536
 sonarqube   -   nproc    409
 EOT
 
-sudo apt-get update -y
-sudo apt-get install openjdk-11-jdk -y
-sudo update-alternatives --config java
+apt -qq update -y && apt -qq install -y wget zip nginx openjdk-11-jdk
 
-java -version
+wget -q https://www.postgresql.org/media/keys/ACCC4CF8.asc -O - | apt-key add -
+echo "deb http://apt.postgresql.org/pub/repos/apt/ $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list
+apt -qq update -y && apt -qq install -y postgresql postgresql-contrib
 
-sudo apt update
-wget -q https://www.postgresql.org/media/keys/ACCC4CF8.asc -O - | sudo apt-key add -
-
-sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt/ `lsb_release -cs`-pgdg main" >> /etc/apt/sources.list.d/pgdg.list'
-sudo apt install postgresql postgresql-contrib -y
-#sudo -u postgres psql -c "SELECT version();"
-sudo systemctl enable postgresql.service
-sudo systemctl start  postgresql.service
-sudo echo "postgres:admin123" | chpasswd
+echo "postgres:admin123" | chpasswd
 runuser -l postgres -c "createuser sonar"
-sudo -i -u postgres psql -c "ALTER USER sonar WITH ENCRYPTED PASSWORD 'admin123';"
-sudo -i -u postgres psql -c "CREATE DATABASE sonarqube OWNER sonar;"
-sudo -i -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE sonarqube to sonar;"
+sudo -iu postgres psql -c "ALTER USER sonar WITH ENCRYPTED PASSWORD 'admin123';"
+sudo -iu postgres psql -c "CREATE DATABASE sonarqube OWNER sonar;"
+sudo -iu postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE sonarqube to sonar;"
 systemctl restart  postgresql
-#systemctl status -l   postgresql
-netstat -tulpena | grep postgres
-sudo mkdir -p /sonarqube/
+
+mkdir -p /sonarqube/
 cd /sonarqube/
-sudo curl -O https://binaries.sonarsource.com/Distribution/sonarqube/sonarqube-8.3.0.34182.zip
-sudo apt-get install zip -y
-sudo unzip -o sonarqube-8.3.0.34182.zip -d /opt/
-sudo mv /opt/sonarqube-8.3.0.34182/ /opt/sonarqube
-sudo groupadd sonar
-sudo useradd -c "SonarQube - User" -d /opt/sonarqube/ -g sonar sonar
-sudo chown sonar:sonar /opt/sonarqube/ -R
+wget -q https://binaries.sonarsource.com/Distribution/sonarqube/sonarqube-8.3.0.34182.zip
+unzip -qo sonarqube-8.3.0.34182.zip -d /opt/
+mv /opt/sonarqube-8.3.0.34182/ /opt/sonarqube
+groupadd sonar
+useradd -c "SonarQube - User" -d /opt/sonarqube/ -g sonar sonar
+chown sonar:sonar /opt/sonarqube/ -R
 cp /opt/sonarqube/conf/sonar.properties /root/sonar.properties_backup
+
 cat <<EOT> /opt/sonarqube/conf/sonar.properties
 sonar.jdbc.username=sonar
 sonar.jdbc.password=admin123
@@ -81,11 +72,11 @@ EOT
 
 systemctl daemon-reload
 systemctl enable sonarqube.service
-#systemctl start sonarqube.service
-#systemctl status -l sonarqube.service
-apt-get install nginx -y
+systemctl start sonarqube.service
+
 rm -rf /etc/nginx/sites-enabled/default
 rm -rf /etc/nginx/sites-available/default
+
 cat <<EOT> /etc/nginx/sites-available/sonarqube
 server{
     listen      80;
@@ -109,11 +100,8 @@ server{
     }
 }
 EOT
-ln -s /etc/nginx/sites-available/sonarqube /etc/nginx/sites-enabled/sonarqube
-systemctl enable nginx.service
-#systemctl restart nginx.service
-sudo ufw allow 80,9000,9001/tcp
 
-echo "System reboot in 30 sec"
-sleep 30
-reboot
+ln -s /etc/nginx/sites-available/sonarqube /etc/nginx/sites-enabled/sonarqube
+
+systemctl enable nginx.service
+systemctl restart nginx.service
