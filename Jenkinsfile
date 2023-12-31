@@ -101,7 +101,7 @@ pipeline {
             echo "Slack Notifications."
             slackSend channel: "#jenkins",
             color: slack_colors[currentBuild.currentResult],
-            message: "*{currentBuild.currentResult}:* Job ${env.JOB_NAME} build ${env.BUILD_NUMBER} \n For more info visit: ${env.BUILD_URL}"
+            message: "${currentBuild.currentResult}: Job ${env.JOB_NAME} build ${env.BUILD_NUMBER} \n For more info visit: ${env.BUILD_URL}"
         }
     }
 }
