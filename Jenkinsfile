@@ -1,3 +1,7 @@
+def slack_colors = [
+    "SUCCESS": "good",
+    "FAILURE": "danger",
+]
 pipeline {
     agent any
     tools {
@@ -89,6 +93,15 @@ pipeline {
                     ]
                 )
             }
+        }
+    }
+
+    post {
+        always {
+            echo "Slack Notifications."
+            slackSend channel: "#jenkins",
+            color: slack_colors[currentBuild.currentResult],
+            message: "*{currentBuild.currentResult}:* Job ${env.JOB_NAME} build ${env.BUILD_NUMBER} \n For more info visit: ${env.BUILD_URL}"
         }
     }
 }
