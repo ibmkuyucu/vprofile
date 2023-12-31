@@ -31,7 +31,7 @@ pipeline {
         }
         stage('Build') {
             steps {
-                sh 'mvn -s settings.xml -DskipTests install'
+                sh 'mvndfsf -s settings.xml -DskipTests install'
             }
             post {
                 success {
