@@ -1,3 +1,6 @@
+# -*- mode: ruby -*-
+# vi:set ft=ruby sw=2 ts=2 sts=2:
+
   Vagrant.configure("2") do |config|
     config.vm.box_check_update = false
     config.hostmanager.enabled = true
@@ -16,7 +19,7 @@
     config.vm.define "jenkins" do |jenkins|
       jenkins.vm.provider "virtualbox" do |v|
         v.name = "ci-jenkins"
-        v.memory = 2048
+        v.memory = 4096
       end
       jenkins.vm.box = "debian11"
       jenkins.vm.hostname = "jenkins"
