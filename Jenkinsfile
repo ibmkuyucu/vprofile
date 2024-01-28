@@ -31,7 +31,7 @@ pipeline {
         }
         stage('Build') {
             steps {
-                sh 'mvn -s settings.xml -DskipTests install'
+                sh 'mvn -DskipTests install'
             }
             post {
                 success {
@@ -42,12 +42,12 @@ pipeline {
         }
         stage('Test') {
             steps {
-                sh "mvn -s settings.xml test"
+                sh "mvn test"
             }
         }
         stage('Checkstyle Analysis') {
             steps {
-                sh "mvn -s settings.xml checkstyle:checkstyle"
+                sh "mvn checkstyle:checkstyle"
             }
         }
         // stage('Sonar Analysis') {
