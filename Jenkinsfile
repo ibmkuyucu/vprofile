@@ -20,7 +20,7 @@ pipeline {
         CENTRAL_REPO = "vpro-maven-central"
         NEXUS_GRP_REPO = "vpro-maven-group"
         SONARSERVER = "SonarCloud"
-        SONARSCANNER = "sonarscanner5"
+        SONARSCANNER = "sonarscanner4"
     }
 
     stages {
