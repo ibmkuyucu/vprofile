@@ -19,8 +19,8 @@ pipeline {
         SNAP_REPO = "vprofile-snapshot"
         CENTRAL_REPO = "vpro-maven-central"
         NEXUS_GRP_REPO = "vpro-maven-group"
-        SONARSERVER = "sonarserver"
-        SONARSCANNER = "sonarscanner"
+        SONARSERVER = "SonarCloud"
+        SONARSCANNER = "sonarscanner5"
     }
 
     stages {
@@ -50,24 +50,24 @@ pipeline {
                 sh "mvn checkstyle:checkstyle"
             }
         }
-        // stage('Sonar Analysis') {
-        //     environment {
-        //         scannerHome = tool "${SONARSCANNER}"
-        //     }
-        //     steps {
-        //         withSonarQubeEnv("${SONARSERVER}") {
-        //             sh '''${scannerHome}/bin/sonar-scanner \
-        //             -Dsonar.projectKey=vprofile \
-        //             -Dsonar.projectName=vprofile \
-        //             -Dsonar.projectVersion=1.0 \
-        //             -Dsonar.sources=src/ \
-        //             -Dsonar.java.binaries=target/test-classes/com/visualpathit/account/controllerTest/ \
-        //             -Dsonar.junit.reportsPath=target/surefire-reports/ \
-        //             -Dsonar.jacoco.reportsPath=target/jacoco.exec \
-        //             -Dsonar.java.checkstyle.reportPaths=target/checkstyle-result.xml'''
-        //         }
-        //     }
-        // }
+        stage('Sonar Analysis') {
+            environment {
+                scannerHome = tool "${SONARSCANNER}"
+            }
+            steps {
+                withSonarQubeEnv("${SONARSERVER}") {
+                    sh '''${scannerHome}/bin/sonar-scanner \
+                    -Dsonar.projectKey=vprofile33 \
+                    -Dsonar.organization=hprofile33 \
+                    -Dsonar.projectVersion=1.0 \
+                    -Dsonar.sources=src/ \
+                    -Dsonar.java.binaries=target/test-classes/com/visualpathit/account/controllerTest/ \
+                    -Dsonar.junit.reportsPath=target/surefire-reports/ \
+                    -Dsonar.jacoco.reportsPath=target/jacoco.exec \
+                    -Dsonar.java.checkstyle.reportPaths=target/checkstyle-result.xml'''
+                }
+            }
+        }
         // stage('Quality Gate') {
         //   steps {
         //     timeout(time: 10, unit: 'MINUTES') {
