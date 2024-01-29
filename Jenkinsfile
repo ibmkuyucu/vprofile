@@ -80,7 +80,7 @@ pipeline {
                 nexusArtifactUploader(
                     nexusVersion: 'nexus3',
                     protocol: 'https',
-                    nexusUrl: "${NEXUSIP},
+                    nexusUrl: "${NEXUSIP}",
                     groupId: "QA",
                     version: "${env.BUILD_ID}-${env.BUILD_TIMESTAMP}",
                     repository: "${RELEASE_REPO}",
