@@ -10,6 +10,8 @@ pipeline {
     }
 
     environment {
+        NEXUS_USER = "admin"
+        NEXUS_PASS = "0f51c7a8-641e-4ed7-ae1b-5791a33c80b9"
         NEXUSIP = "127.0.0.1"
         NEXUSPORT = "8081"
         NEXUS_LOGIN = "nexuslogin"
@@ -29,7 +31,7 @@ pipeline {
         }
         stage('Build') {
             steps {
-                sh 'mvn -DskipTests install'
+                sh 'mvn -s settings.xml -DskipTests install'
             }
             post {
                 success {
@@ -40,12 +42,12 @@ pipeline {
         }
         stage('Test') {
             steps {
-                sh "mvn test"
+                sh "mvn -s settings.xml test"
             }
         }
         stage('Checkstyle Analysis') {
             steps {
-                sh "mvn checkstyle:checkstyle"
+                sh "mvn -s settings.xml checkstyle:checkstyle"
             }
         }
         stage('Sonar Analysis') {
