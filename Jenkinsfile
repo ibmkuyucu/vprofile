@@ -12,7 +12,7 @@ pipeline {
     environment {
         NEXUS_USER = "admin"
         NEXUS_PASS = "admin123"
-        NEXUSIP = "127.0.0.1"
+        NEXUSIP = "nexus.kuyucu.online"
         NEXUSPORT = "8081"
         NEXUS_LOGIN = "nexuslogin"
         RELEASE_REPO = "vprofile-release"
@@ -79,8 +79,8 @@ pipeline {
             steps {
                 nexusArtifactUploader(
                     nexusVersion: 'nexus3',
-                    protocol: 'http',
-                    nexusUrl: "${NEXUSIP}:${NEXUSPORT}",
+                    protocol: 'https',
+                    nexusUrl: "${NEXUSIP}",
                     groupId: "QA",
                     version: "${env.BUILD_ID}-${env.BUILD_TIMESTAMP}",
                     repository: "${RELEASE_REPO}",
