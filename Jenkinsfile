@@ -12,8 +12,8 @@ pipeline {
     environment {
         NEXUS_USER = "admin"
         NEXUS_PASS = "admin123"
-        NEXUSIP = "192.168.229.13"
-        NEXUSPORT = "8081"
+        NEXUSIP = "nexus.kuyucu.online"
+        NEXUSPORT = "443"
         NEXUS_LOGIN = "nexuslogin"
         RELEASE_REPO = "vprofile-release"
         SNAP_REPO = "vprofile-snapshot"
@@ -75,25 +75,25 @@ pipeline {
         //     }
         //   }
         // }
-        // stage("Upload Artifact") {
-        //     steps {
-        //         nexusArtifactUploader(
-        //             nexusVersion: 'nexus3',
-        //             protocol: 'http',
-        //             nexusUrl: "${NEXUSIP}:${NEXUSPORT}",
-        //             groupId: "QA",
-        //             version: "${env.BUILD_ID}-${env.BUILD_TIMESTAMP}",
-        //             repository: "${RELEASE_REPO}",
-        //             credentialsId: "${NEXUS_LOGIN}",
-        //             artifacts: [
-        //                 [artifactId: "vproapp",
-        //                 classifier: '',
-        //                 file: 'target/vprofile-v2.war',
-        //                 type: 'war']
-        //             ]
-        //         )
-        //     }
-        // }
+        stage("Upload Artifact") {
+            steps {
+                nexusArtifactUploader(
+                    nexusVersion: 'nexus3',
+                    protocol: 'https',
+                    nexusUrl: "${NEXUSIP},
+                    groupId: "QA",
+                    version: "${env.BUILD_ID}-${env.BUILD_TIMESTAMP}",
+                    repository: "${RELEASE_REPO}",
+                    credentialsId: "${NEXUS_LOGIN}",
+                    artifacts: [
+                        [artifactId: "vproapp",
+                        classifier: '',
+                        file: 'target/vprofile-v2.war',
+                        type: 'war']
+                    ]
+                )
+            }
+        }
     }
 
     // post {
