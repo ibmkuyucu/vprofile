@@ -59,7 +59,7 @@ pipeline {
                     sh '''${scannerHome}/bin/sonar-scanner \
                     -Dsonar.projectKey=deneme33 \
                     -Dsonar.organization=hprofile33 \
-                    -Dsonar.projectVersion=1.1 \
+                    -Dsonar.projectVersion=1 \
                     -Dsonar.sources=src/ \
                     -Dsonar.java.binaries=target/test-classes/com/visualpathit/account/controllerTest/ \
                     -Dsonar.junit.reportsPath=target/surefire-reports/ \
