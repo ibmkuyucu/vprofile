@@ -26,6 +26,7 @@ pipeline {
     stages {
         stage('Fetch') {
             steps {
+                cleanWs()
                 git branch: 'main', url: "https://github.com/ibmkuyucu/vprofile.git"
             }
         }
