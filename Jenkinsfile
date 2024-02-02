@@ -53,7 +53,7 @@ pipeline {
         }
         stage('Sonar Analysis') {
             tools {
-                jdk "OpenJDK11"
+                jdk "OpenJDK17"
             }
             environment {
                 scannerHome = tool "${SONARSCANNER}"
