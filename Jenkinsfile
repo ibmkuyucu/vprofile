@@ -6,7 +6,7 @@ pipeline {
     agent any
     tools {
         maven "Maven3"
-        jdk "OpenJDK17"
+        jdk "OpenJDK11"
     }
 
     environment {
@@ -52,6 +52,9 @@ pipeline {
             }
         }
         stage('Sonar Analysis') {
+            tools {
+                jdk "OpenJDK11"
+            }
             environment {
                 scannerHome = tool "${SONARSCANNER}"
             }
@@ -77,6 +80,9 @@ pipeline {
         //   }
         // }
         stage("Upload Artifact") {
+            tools {
+                jdk "OpenJDK8"
+            }
             steps {
                 nexusArtifactUploader(
                     nexusVersion: 'nexus3',
