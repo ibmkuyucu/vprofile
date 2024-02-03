@@ -5,12 +5,13 @@ services:
   db:
     image: mysql:8
     volumes:
-    - resources/accountsdb.sql:/docker-entrypoint-initdb.d/accountsdb.sql
+    - ./resources/accountsdb.sql:/docker-entrypoint-initdb.d/accountsdb.sql
     - vpdata:/var/lib/mysql
     ports:
     - 3306:3306
     environment:
-    - MYSQL_ROOT_PASSWORD=admin123
+    - MYSQL_USER=admin
+    - MYSQL_PASSWORD=admin123
     - MYSQL_DATABASE=accounts
   rmq:
     image: rabbitmq
@@ -28,3 +29,7 @@ services:
     image: ibmkuyucu/vprofile:1.1
     ports:
     - 8080:8080
+    depends_on:
+    - db
+    - rmq
+    - mc
