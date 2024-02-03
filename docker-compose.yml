@@ -1,10 +1,30 @@
 version: '3.4'
-
+volumes:
+  vpdata: {}
 services:
-  vprofile:
-    image: vprofile
-    build:
-      context: .
-      dockerfile: ./Dockerfile
+  db:
+    image: mysql:8
+    volumes:
+    - resources/accountsdb.sql:/docker-entrypoint-initdb.d/accountsdb.sql
+    - vpdata:/var/lib/mysql
     ports:
-      - 8080:8080
+    - 3306:3306
+    environment:
+    - MYSQL_ROOT_PASSWORD=admin123
+    - MYSQL_DATABASE=accounts
+  rmq:
+    image: rabbitmq
+    ports:
+    - 5672:5672
+    - 15672:15672
+    environment:
+    - RABBITMQ_DEFAULT_USER=guest
+    - RABBITMQ_DEFAULT_PASS=guest 
+  mc:
+    image: memcached
+    ports:
+    - 11211:11211
+  vprofile:
+    image: ibmkuyucu/vprofile:1.1
+    ports:
+    - 8080:8080
