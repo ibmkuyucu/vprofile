@@ -34,7 +34,7 @@ Vagrant.configure("2") do |config|
       vb.memory = 8192
     end
     test.vm.network "private_network", ip: IP_ADDR, name: "VirtualBox Host-Only Ethernet Adapter"
-    test.vm.provision "install-docker", type: "shell", path: "scripts/install-docker_apt.sh"
+    test.vm.provision "install-docker", type: "shell", path: "resources/install-docker_apt.sh"
   end
 
 end
