@@ -91,7 +91,10 @@ pipeline {
         }
         stage('Deploy Image') {
             steps {
-                sh "docker push --all-tags $registry/$repository"
+                withCredentials([usernamePassword(credentialsId: $registryCredential, passwordVariable: 'dockerHubPassword', usernameVariable: 'dockerHubUser')]) {
+                    sh "docker login -u ${env.dockerHubUser} -p ${env.dockerHubPassword}"
+                    sh "docker push --all-tags $registry/$repository"
+                }
             }
         }
         stage('Remove Unused Image') {
