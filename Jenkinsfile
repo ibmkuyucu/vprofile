@@ -18,7 +18,7 @@ pipeline {
     }
 
     stages {
-        stage('Fetch') {
+        stage('Fetch Code') {
             steps {
                 cleanWs()
                 git branch: 'main', url: "https://github.com/ibmkuyucu/vprofile.git"
@@ -77,6 +77,12 @@ pipeline {
                waitForQualityGate abortPipeline: true
             }
           }
+        }
+        stage('Fetch Dockerfile') {
+            steps {
+                cleanWs()
+                git branch: 'ci-docker', url: "https://github.com/ibmkuyucu/vprofile.git"
+            }
         }
         stage('Build Image') {
             steps {
