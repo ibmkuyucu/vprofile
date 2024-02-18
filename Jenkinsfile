@@ -93,7 +93,6 @@ pipeline {
             steps {
                 sh "docker push --all-tags $registry/$repository:$BUILD_NUMBER"
             }
-            }
         }
         stage('Remove Unused Image') {
             steps {
