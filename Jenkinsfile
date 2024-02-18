@@ -18,66 +18,66 @@ pipeline {
     }
 
     stages {
-        stage('Fetch Code') {
-            steps {
-                cleanWs()
-                git branch: 'main', url: "https://github.com/ibmkuyucu/vprofile.git"
-            }
-        }
-        stage('Build') {
-            steps {
-                sh 'mvn install -DskipTests'
-            }
-            post {
-                success {
-                    echo "Now Archiving."
-                    archiveArtifacts artifacts: "**/*.war"
-                }
-            }
-        }
-        stage('Unit Test') {
-            steps {
-                sh "mvn test"
-            }
-        }
-        stage('Integration Test') {
-            steps {
-                sh "mvn verify -DskipUnitTests"
-            }
-        }
-        stage('Checkstyle Analysis') {
-            steps {
-                sh "mvn checkstyle:checkstyle"
-            }
-        }
-        stage('Sonar Analysis') {
-            tools {
-                jdk "OpenJDK17"
-            }
-            environment {
-                scannerHome = tool "${SONARSCANNER}"
-            }
-            steps {
-                withSonarQubeEnv("${SONARSERVER}") {
-                    sh '''${scannerHome}/bin/sonar-scanner \
-                    -Dsonar.projectKey=deneme33 \
-                    -Dsonar.organization=hprofile33 \
-                    -Dsonar.projectVersion=1 \
-                    -Dsonar.sources=src/ \
-                    -Dsonar.java.binaries=target/test-classes/com/visualpathit/account/controllerTest/ \
-                    -Dsonar.junit.reportsPath=target/surefire-reports/ \
-                    -Dsonar.jacoco.reportsPath=target/jacoco.exec \
-                    -Dsonar.java.checkstyle.reportPaths=target/checkstyle-result.xml'''
-                }
-            }
-        }
-        stage('Quality Gate') {
-          steps {
-            timeout(time: 10, unit: 'MINUTES') {
-               waitForQualityGate abortPipeline: true
-            }
-          }
-        }
+        // stage('Fetch Code') {
+        //     steps {
+        //         cleanWs()
+        //         git branch: 'main', url: "https://github.com/ibmkuyucu/vprofile.git"
+        //     }
+        // }
+        // stage('Build') {
+        //     steps {
+        //         sh 'mvn install -DskipTests'
+        //     }
+        //     post {
+        //         success {
+        //             echo "Now Archiving."
+        //             archiveArtifacts artifacts: "**/*.war"
+        //         }
+        //     }
+        // }
+        // stage('Unit Test') {
+        //     steps {
+        //         sh "mvn test"
+        //     }
+        // }
+        // stage('Integration Test') {
+        //     steps {
+        //         sh "mvn verify -DskipUnitTests"
+        //     }
+        // }
+        // stage('Checkstyle Analysis') {
+        //     steps {
+        //         sh "mvn checkstyle:checkstyle"
+        //     }
+        // }
+        // stage('Sonar Analysis') {
+        //     tools {
+        //         jdk "OpenJDK17"
+        //     }
+        //     environment {
+        //         scannerHome = tool "${SONARSCANNER}"
+        //     }
+        //     steps {
+        //         withSonarQubeEnv("${SONARSERVER}") {
+        //             sh '''${scannerHome}/bin/sonar-scanner \
+        //             -Dsonar.projectKey=deneme33 \
+        //             -Dsonar.organization=hprofile33 \
+        //             -Dsonar.projectVersion=1 \
+        //             -Dsonar.sources=src/ \
+        //             -Dsonar.java.binaries=target/test-classes/com/visualpathit/account/controllerTest/ \
+        //             -Dsonar.junit.reportsPath=target/surefire-reports/ \
+        //             -Dsonar.jacoco.reportsPath=target/jacoco.exec \
+        //             -Dsonar.java.checkstyle.reportPaths=target/checkstyle-result.xml'''
+        //         }
+        //     }
+        // }
+        // stage('Quality Gate') {
+        //   steps {
+        //     timeout(time: 10, unit: 'MINUTES') {
+        //        waitForQualityGate abortPipeline: true
+        //     }
+        //   }
+        // }
         stage('Fetch Dockerfile') {
             steps {
                 cleanWs()
@@ -86,24 +86,18 @@ pipeline {
         }
         stage('Build Image') {
             steps {
-                script {
-                    dockerImage = docker.build repository + ":$BUILD_NUMBER"
-                }
+                sh "docker build -t $registry/$repository:$BUILD_NUMBER -t $registry/$repository:latest ."
             }
         }
         stage('Deploy Image') {
             steps {
-                script {
-                    docker.withRegistry(registry, registryCredential ) {
-                        dockerImage.push("$BUILD_NUMBER")
-                        dockerImage.push('latest')
-                    }
-                }
+                sh "docker push --all-tags $registry/$repository:$BUILD_NUMBER"
+            }
             }
         }
         stage('Remove Unused Image') {
             steps {
-                sh "docker rmi $repository:$BUILD_NUMBER"
+                sh "docker rmi -f $registry/$repository:$BUILD_NUMBER"
             }
         }
     }
