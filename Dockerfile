@@ -1,5 +1,5 @@
 FROM openjdk:11 AS BUILD_IMAGE
-RUN apt update && apt install maven -y
+RUN apt update && apt install maven -y && apt clean
 RUN git clone https://github.com/ibmkuyucu/vprofile.git
 COPY resources/application.properties /vprofile/src/main/resources/
 RUN cd vprofile && mvn install
