@@ -12,7 +12,7 @@ pipeline {
     environment {
         registry = "localhost:8082"
         repository = "vproappdock"
-        registryCredential = 'ocidockerhub'
+        registryCredential = 'nexushub'
         SONARSERVER = "SonarCloud"
         SONARSCANNER = "sonarscanner4"
     }
