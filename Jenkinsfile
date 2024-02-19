@@ -84,16 +84,17 @@ pipeline {
                 git branch: 'ci-docker', url: "https://github.com/ibmkuyucu/vprofile.git"
             }
         }
-        stage('Build Image') {
-            steps {
-                sh "docker build -t $registry/$repository:$BUILD_NUMBER -t $registry/$repository:latest ."
-            }
-        }
-        stage('Deploy Image') {
+        // stage('Build Image') {
+        //     steps {
+        //         sh "docker build -t $registry/$repository:$BUILD_NUMBER -t $registry/$repository:latest ."
+        //     }
+        // }
+        stage('Build and Deploy Image') {
             steps {
                 withCredentials([usernamePassword(credentialsId: registryCredential, passwordVariable: 'dockerHubPassword', usernameVariable: 'dockerHubUser')]) {
                     sh "docker login -u ${env.dockerHubUser} -p ${env.dockerHubPassword} http://$registry"
-                    sh "docker push --all-tags $registry/$repository"
+                    sh "docker buildx build --push --platform linux/amd64,linux/arm64 -t $registry/$repository:$BUILD_NUMBER -t $registry/$repository:latest ."
+                    // sh "docker push --all-tags $registry/$repository"
                 }
             }
         }
