@@ -116,7 +116,8 @@ pipeline {
         stage('Build Docker Manifest and push') {
             steps {
                 script {
-                    docker.withRegistry( registry, registryCredential ) {
+                    withCredentials([usernamePassword(credentialsId: registryCredential, passwordVariable: 'dockerHubPassword', usernameVariable: 'dockerHubUser')]) {
+                        sh "docker login -u ${env.dockerHubUser} -p ${env.dockerHubPassword} http://${registry}"
                         sh "docker manifest create ${docker_img}:latest ${docker_img}:amd64 ${docker_img}:arm64"
                         sh "docker manifest push ${docker_img}:latest"
                     }
