@@ -3,16 +3,16 @@ def slack_colors = [
     "FAILURE": "danger",
 ]
 pipeline {
-    agent any
+    agent linux-amd64
     tools {
         maven "Maven3"
         jdk "OpenJDK11"
     }
 
     environment {
-        registry = "http://localhost:5000"
+        registry = "http://localhost:8082"
         repository = "vproappdock"
-        registryCredential = 'ocidockerhub'
+        registryCredential = 'nexushub'
         SONARSERVER = "SonarCloud"
         SONARSCANNER = "sonarscanner4"
     }
@@ -108,12 +108,12 @@ pipeline {
         }
     }
 
-    // post {
-    //     always {
-    //         echo "Slack Notifications."
-    //         slackSend channel: "#jenkins",
-    //         color: slack_colors[currentBuild.currentResult],
-    //         message: "${currentBuild.currentResult}: Job ${env.JOB_NAME} build ${env.BUILD_NUMBER} \n For more info visit: ${env.BUILD_URL}"
-    //     }
-    // }
+    post {
+        always {
+            echo "Slack Notifications."
+            slackSend channel: "#jenkins",
+            color: slack_colors[currentBuild.currentResult],
+            message: "${currentBuild.currentResult}: Job ${env.JOB_NAME} build ${env.BUILD_NUMBER} \n For more info visit: ${env.BUILD_URL}"
+        }
+    }
 }
