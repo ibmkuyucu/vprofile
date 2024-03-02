@@ -3,7 +3,9 @@ def slack_colors = [
     "FAILURE": "danger",
 ]
 pipeline {
-    agent "linux-amd64"
+    agent {
+        "linux-amd64"
+    }
     tools {
         maven "Maven3"
         jdk "OpenJDK11"
