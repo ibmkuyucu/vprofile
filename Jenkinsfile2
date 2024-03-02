@@ -4,7 +4,7 @@ def slack_colors = [
 ]
 pipeline {
     agent {
-        label "linux_amd64"
+        label "linux_arm64"
     }
     tools {
         maven "Maven3"
@@ -86,26 +86,19 @@ pipeline {
                 git branch: 'ci-docker', url: "https://github.com/ibmkuyucu/vprofile.git"
             }
         }
-        stage('Build Image') {
+        stage('Build and Deploy Image on AMD') {
+            agent {
+                label "linux_amd64"
+            }
             steps {
                 script {
                     dockerImage = docker.build repository + ":$BUILD_NUMBER"
-                }
-            }
-        }
-        stage('Deploy Image') {
-            steps {
-                script {
                     docker.withRegistry(registry, registryCredential ) {
                         dockerImage.push("$BUILD_NUMBER")
                         dockerImage.push('amd64')
                     }
                 }
-            }
-        }
-        stage('Remove Unused Image') {
-            steps {
-                sh "docker rmi $repository:$BUILD_NUMBER"
+                sh "docker rmi -f $repository:$BUILD_NUMBER"
             }
         }
     }
