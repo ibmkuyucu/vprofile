@@ -118,7 +118,7 @@ pipeline {
                 script {
                     withCredentials([usernamePassword(credentialsId: registryCredential, passwordVariable: 'dockerHubPassword', usernameVariable: 'dockerHubUser')]) {
                         sh "docker login -u ${env.dockerHubUser} -p ${env.dockerHubPassword} http://${registry}"
-                        sh "docker manifest create --insecure ${registry}/${docker_img}:latest ${registry}/${docker_img}:amd64 ${registry}/${docker_img}:arm64"
+                        sh "docker manifest create --insecure --amend ${registry}/${docker_img}:latest ${registry}/${docker_img}:amd64 ${registry}/${docker_img}:arm64"
                         sh "docker manifest push --purge --insecure ${registry}/${docker_img}:latest"
                     }
                 }
