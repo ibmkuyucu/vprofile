@@ -4,7 +4,7 @@ def slack_colors = [
 ]
 pipeline {
     agent {
-        label "linux-amd64"
+        label "linux_amd64"
     }
     tools {
         maven "Maven3"
