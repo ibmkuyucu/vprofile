@@ -3,9 +3,7 @@ def slack_colors = [
     "FAILURE": "danger",
 ]
 pipeline {
-    agent {
-        label "linux_amd64"
-    }
+    agent any
     tools {
         maven "Maven3"
         jdk "OpenJDK11"
@@ -86,6 +84,11 @@ pipeline {
                 git branch: 'ci-docker', url: "https://github.com/ibmkuyucu/vprofile.git"
             }
         }
+    }
+    agent {
+        label "linux_amd64"
+    }
+    stages {
         stage('Build Image') {
             steps {
                 script {
@@ -98,7 +101,7 @@ pipeline {
                 script {
                     docker.withRegistry(registry, registryCredential ) {
                         dockerImage.push("$BUILD_NUMBER")
-                        dockerImage.push('latest')
+                        dockerImage.push('amd64')
                     }
                 }
             }
@@ -109,7 +112,7 @@ pipeline {
             }
         }
     }
-
+    agent any
     post {
         always {
             echo "Slack Notifications."
