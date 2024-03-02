@@ -19,7 +19,7 @@ pipeline {
         SONARSCANNER = "sonarscanner4"
     }
 
-    // stages {
+    stages {
     //     stage('Fetch Code') {
     //         steps {
     //             cleanWs()
