@@ -12,7 +12,7 @@ pipeline {
     }
 
     environment {
-        registry = "http://localhost:8082"
+        registry = "http://devtools:8082"
         repository = "vproappdock"
         registryCredential = 'nexushub'
         SONARSERVER = "SonarCloud"
