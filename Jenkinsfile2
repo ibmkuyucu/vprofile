@@ -12,7 +12,7 @@ pipeline {
     }
 
     environment {
-        registry = "http://devtools:8082"
+        registry = "devtools:8082"
         docker_img = "vproappdock"
         registryCredential = 'nexushub'
         SONARSERVER = "SonarCloud"
@@ -90,7 +90,7 @@ pipeline {
             steps {
                 script {
                     dockerImage = docker.build docker_img + ":$BUILD_NUMBER"
-                    docker.withRegistry(registry, registryCredential ) {
+                    docker.withRegistry('http://' + registry, registryCredential ) {
                         dockerImage.push("$BUILD_NUMBER")
                         dockerImage.push('arm64')
                     }
@@ -105,7 +105,7 @@ pipeline {
             steps {
                 script {
                     dockerImage = docker.build docker_img + ":$BUILD_NUMBER"
-                    docker.withRegistry( registry, registryCredential ) {
+                    docker.withRegistry( 'http://' + registry, registryCredential ) {
                         dockerImage.push("$BUILD_NUMBER")
                         dockerImage.push('amd64')
                     }
@@ -117,7 +117,7 @@ pipeline {
             steps {
                 script {
                     withCredentials([usernamePassword(credentialsId: registryCredential, passwordVariable: 'dockerHubPassword', usernameVariable: 'dockerHubUser')]) {
-                        sh "docker login -u ${env.dockerHubUser} -p ${env.dockerHubPassword} ${registry}"
+                        sh "docker login -u ${env.dockerHubUser} -p ${env.dockerHubPassword} http://${registry}"
                         sh "docker manifest create --insecure ${registry}/${docker_img}:latest ${registry}/${docker_img}:amd64 ${registry}/${docker_img}:arm64"
                         sh "docker manifest push ${registry}/${docker_img}:latest"
                     }
