@@ -14,7 +14,7 @@
     
   ### DB vm  ####
     config.vm.define "db01" do |db01|
-      db01.vm.box = "almalinux/9"
+      db01.vm.box = "rocky9"
       db01.vm.hostname = "db01"
       db01.vm.network "private_network", ip: "192.168.229.15", name: "VirtualBox Host-Only Ethernet Adapter"
       db01.vm.provision "mysql", type: "shell", path: "mysql.sh"
@@ -22,7 +22,7 @@
     
   ### Memcache vm  #### 
     config.vm.define "mc01" do |mc01|
-      mc01.vm.box = "almalinux/9"
+      mc01.vm.box = "rocky9"
       mc01.vm.hostname = "mc01"
       mc01.vm.network "private_network", ip: "192.168.229.14", name: "VirtualBox Host-Only Ethernet Adapter"
       mc01.vm.provision "memcache", type: "shell", path: "memcache.sh"
@@ -30,7 +30,7 @@
     
   ### RabbitMQ vm  ####
     config.vm.define "rmq01" do |rmq01|
-      rmq01.vm.box = "almalinux/9"
+      rmq01.vm.box = "rocky9"
       rmq01.vm.hostname = "rmq01"
       rmq01.vm.network "private_network", ip: "192.168.229.13", name: "VirtualBox Host-Only Ethernet Adapter"
       rmq01.vm.provision "rabbitmq", type: "shell", path: "rabbitmq.sh"
@@ -38,7 +38,7 @@
     
   ### tomcat vm ###
     config.vm.define "app01" do |app01|
-      app01.vm.box = "almalinux/9"
+      app01.vm.box = "rocky9"
       app01.vm.hostname = "app01"
       app01.vm.network "private_network", ip: "192.168.229.12", name: "VirtualBox Host-Only Ethernet Adapter"
       app01.vm.provision "tomcat", type: "shell", path: "tomcat.sh"
